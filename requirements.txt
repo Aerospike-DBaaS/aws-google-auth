@@ -9,4 +9,4 @@ requests
 six
 tabulate
 tzlocal
-imgcat
+imgcat; sys_platform == 'darwin'
