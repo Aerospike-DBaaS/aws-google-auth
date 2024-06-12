@@ -504,7 +504,7 @@ class Google:
             try:
                 with requests.get(captcha_url) as url:
                     with io.BytesIO(url.content) as f:
-                        if self.inline_captcha:
+                        if self.inline_captcha and has_imgcat and sys.platform == 'darwin':
                             imgcat(Image.open(f))
                         else:
                             Image.open(f).show()
