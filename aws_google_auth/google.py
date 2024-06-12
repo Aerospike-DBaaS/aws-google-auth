@@ -18,6 +18,7 @@ from bs4 import BeautifulSoup
 from requests import HTTPError
 from six import print_ as print
 from six.moves import urllib_parse, input
+from imgcat import imgcat
 
 from aws_google_auth import _version
 
@@ -35,7 +36,7 @@ class ExpectedGoogleException(Exception):
 
 
 class Google:
-    def __init__(self, config, save_failure, save_flow=False):
+    def __init__(self, config, save_failure, save_flow=False, inline_captcha=False):
         """The Google object holds authentication state
         for a given session. You need to supply:
 
@@ -53,6 +54,7 @@ class Google:
         self.base_url = 'https://accounts.google.com'
         self.save_failure = save_failure
         self.session_state = None
+        self.inline_captcha = inline_captcha
         self.save_flow = save_flow
         if save_flow:
             self.save_flow_dict = {}
@@ -498,7 +500,10 @@ class Google:
             try:
                 with requests.get(captcha_url) as url:
                     with io.BytesIO(url.content) as f:
-                        Image.open(f).show()
+                        if self.inline_captcha:
+                            imgcat(Image.open(f))
+                        else:
+                            Image.open(f).show()
             except Exception:
                 pass
 
